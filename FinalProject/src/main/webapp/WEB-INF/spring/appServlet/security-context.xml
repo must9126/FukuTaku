@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<http auto-config="true">
+	<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+	<intercept-url pattern="/customer/*/reg" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+	
+	<form-login 
+				 login-page="/member/login" 
+				 login-processing-url="/member/login"
+				 
+				 default-target-url="/index" /><!-- post -->
+	<logout 
+				logout-url="/member/logout" 
+				logout-success-url="/index" 
+				invalidate-session="true" />
+	
+	<csrf disabled="true" />
+</http>
+<authentication-manager>
+	<authentication-provider>
+		<!-- <user-service >
+			<user name="newlec" password="{noop}111" authorities="ROLE_USER, ROLE_ADMIN"/>
+		</user-service> --> <!-- DB를 사용하지않을때 -->
+		<password-encoder hash="bcrypt" />
+		<jdbc-user-service
+			data-source-ref="dataSource"
+			users-by-username-query="SELECT ID, PWD PASWORD, 1 ENABLED FROM MEMBER WHERE ID=?"
+			authorities-by-username-query="SELECT MEMBER_ID ID, ROLE_ID ROLEID FROM MEMBER_ROLE WHERE MEMBER_ID=?"/> <!-- DB를 사용할때 -->
+		<!-- <ldap-user-service/> --> <!--  -->
+	</authentication-provider>
+</authentication-manager>
+
+
+
+
+
+
+</beans:beans>

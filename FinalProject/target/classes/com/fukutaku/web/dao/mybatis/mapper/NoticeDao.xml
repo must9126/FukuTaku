@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newlecture.web.dao.NoticeDao">
+  <select id="getViewList" resultType="com.newlecture.web.entity.NoticeView">
+  	select * from Notice_View
+  	where 
+  	<!-- <if test="param3 != null"> 이렇게 if를 걸수도있다. -->
+  		${param3} like '%${param2}%'and
+  		<!-- </if> -->
+  		 num between #{param1}*10-9 and #{param1}*10
+  </select>
+  <select id="getList" resultType="com.newlecture.web.entity.Notice">
+  	select id, title, content, writer_id as writerid, regdate, hit from Notice
+  </select>
+  <select id="getNoticeView" resultType="com.newlecture.web.entity.NoticeView">
+  	select * from Notice_View
+  	 where id =#{param1}
+  <!-- ${} 값이 아닌 테이블명등에 사용한다 -->
+  <!-- #{} 값에 사용한다 -->
+  </select>
+  <select id="getNotice" resultType="com.newlecture.web.entity.Notice">
+  	select id,title, content, writer_id as writerId, regDate, hit from Notice
+  	 where id=#{param1}
+  
+  </select>
+  <insert id="insert" parameterType="com.newlecture.web.entity.Notice">
+  	insert into Notice(id, title, content, writer_id)
+  	values(NOTICE_SEQ.NEXTVAL, #{title}, #{content}, #{writerId})
+  	<!--  values(#{title},#{content}) -> values(hello , 'hello') -->
+  
+  </insert>
+  
+  <update id="update" parameterType="com.newlecture.web.entity.Notice">
+  	update Notice
+  		set title = #{title},
+  			content = #{content},
+  			writer_Id= #{writerId},
+  			regDate = #{regDate},
+  			hit = #{hit}
+  	where id=#{id}
+  
+  </update>
+  
+</mapper>
